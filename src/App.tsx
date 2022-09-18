@@ -1,34 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import "./App.css";
+import axios from "axios";
+import Header from "./components/Header";
+import CatCard from "./components/CatCard";
+import React from "react";
+import { Grid, Container, Paper } from "@mui/material";
+import { makeStyles, createStyles, Theme } from "@mui/material/styles";
 
-function App() {
-  const [count, setCount] = useState(0)
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+axios.defaults.headers.common["x-api-key"] = import.meta.env.VITE_API_KEY;
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+interface ICats {
+  id: string;
+  url: string;
+  width: number;
+  height: number;
 }
 
-export default App
+function App() {
+  const [cats, setCats] = React.useState<ICats[]>([]);
+
+  React.useEffect(() => {
+    axios
+      .get("/images/search?limit=10&order=Desc")
+      .then((response) => setCats(response.data));
+  }, []);
+
+  if (!cats) return null;
+
+  const catCollection = cats.map((cat) => {
+    return (
+      <Grid item xs={6} sm={4} md={3}>
+        <CatCard key={cat.id} {...cat} />
+      </Grid>
+    );
+  });
+
+  return (
+    <Container maxWidth="lg">
+      <Header title="Lots of cats" />
+      <Grid container spacing={1}>
+        {catCollection}
+      </Grid>
+    </Container>
+  );
+}
+
+export default App;
