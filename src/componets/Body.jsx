@@ -3,13 +3,21 @@ import React from "react";
 import axios from "axios";
 import CatCard from "./CatCard";
 import { Grid } from "@mui/material";
+import { makeStyles } from "@material-ui/core/styles";
+
+const useStyles = makeStyles({
+  root: {
+    justifyContent: "center",
+  },
+});
 
 export default function Body() {
   const [cats, setCats] = React.useState([]);
+  const classes = useStyles();
 
   React.useEffect(() => {
     axios
-      .get("/images/search?limit=10&order=Desc")
+      .get("/images/search?limit=12&order=Desc")
       .then((response) => setCats(response.data));
   }, []);
 
@@ -24,7 +32,7 @@ export default function Body() {
   });
 
   return (
-    <Grid container spacing={1}>
+    <Grid container spacing={1} className={classes.root}>
       {catCollection}
     </Grid>
   );

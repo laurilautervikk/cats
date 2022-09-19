@@ -9,7 +9,7 @@ axios.defaults.headers.common["x-api-key"] = import.meta.env.VITE_API_KEY;
 
 function App() {
   return (
-    <Container maxWidth="lg">
+    <Container maxWidth="md">
       <Header />
       <Body />
     </Container>
